@@ -6,7 +6,7 @@ import type { OrganizationTable,DaoDetailsTable } from "./organization";
 import type { ProposalDetailsTable, ProposalTable } from "./proposal";
 import type { PriceTable } from "./prices";
 import type { TwapTable } from "./twap";
-
+import type { OrdersTable, TakesTable } from "./trades";
 // Database Types
 export interface Database {
   proposal_details: ProposalDetailsTable;
@@ -15,6 +15,8 @@ export interface Database {
   dao_details: DaoDetailsTable;
   prices_chart_data: PriceTable;
   twap_chart_data: TwapTable;
+  orders: OrdersTable;
+  takes: TakesTable;
 }
 
 // Database Instance
