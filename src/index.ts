@@ -2,11 +2,13 @@ import type { NextFunction, Request, Response } from "express";
 import express from "express";
 import { rateLimit } from 'express-rate-limit'
 import { log } from "./logger/logger";
+
 import organizationRouter from "./routes/organization";
 import proposalRouter from "./routes/proposals";
 import healthRouter from "./routes/health";
 import pricesRouter from "./routes/prices";
 import twapRouter from "./routes/twap";
+import tradesRouter from "./routes/trades";
 import { authMiddleware } from "./middleware/auth";
 import authMiddlewareRouter from "./middleware/auth";
 
@@ -39,6 +41,7 @@ async function main() {
   app.use("/organizations", organizationRouter);
   app.use("/prices", pricesRouter);
   app.use("/twap", twapRouter);
+  app.use("/trades", tradesRouter);
   
   app.use(function (
     err: Error,
