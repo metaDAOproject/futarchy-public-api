@@ -1,10 +1,26 @@
 import type { Request, Response, NextFunction } from "express"
 import express from "express";
-import cache from "persistent-cache"
+import { ApiTokensStore, type ApiToken } from "../db/token";
 
-const authCache = cache();
+const apiTokensStore = new ApiTokensStore();
+
+let authTokens: Map<string, ApiToken> = new Map();
+let lastRefresh = 0;
+const refreshAuthTokens = async () => {
+  const tokens = await apiTokensStore.findAll();
+  authTokens = new Map(tokens.map(token => [token.token, token]));
+  lastRefresh = Date.now();
+}
+
+refreshAuthTokens();
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
+  //if the tokens are older than 5 minutes, refresh them
+  if (Date.now() - lastRefresh > 1000 * 60 * 5) {
+    refreshAuthTokens();
+  }
+  
   const token = getAuthToken(req)
   if (!token) {
     res.status(401).json({ message: "Unauthorized" })
@@ -17,8 +33,7 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
     return;
   }
 
-  const cachedToken = authCache.getSync(token);
-  if (!cachedToken) {
+  if (!authTokens.has(token)) {
     res.status(401).json({ message: "Unauthorized" })
     return;
   }
@@ -34,7 +49,8 @@ export const adminMiddleware = (req: Request, res: Response, next: NextFunction)
   next();
 }
 
-function getAuthToken(req: Request) {const authHeader = req.headers.authorization
+function getAuthToken(req: Request) {
+  const authHeader = req.headers.authorization
   if (!authHeader) {
     return null;
   }
@@ -44,7 +60,12 @@ function getAuthToken(req: Request) {const authHeader = req.headers.authorizatio
 
 const getNewAuthToken = async (req: Request, res: Response) => {
   const newToken = crypto.randomUUID();
-  authCache.putSync(newToken, "true");
+  const url = req.body.url;
+  const tokenRes = await apiTokensStore.create(newToken, url);
+  if (!tokenRes) {
+    res.status(400).json({ message: "Failed to create token" });
+    return;
+  }
   res.json({token: newToken});
 }
 
