@@ -17,6 +17,9 @@ async function main() {
   const app = express();
   const port = process.env.PORT || 3000;
 
+  //trust cloudflare proxy
+  app.set('trust proxy', 1);
+
   app.use(express.json());
   app.use(function (req, res, next) {
     res.setHeader("access-control-allow-origin", "*");
