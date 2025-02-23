@@ -7,6 +7,7 @@ import type { ProposalDetailsTable, ProposalTable } from "./proposal";
 import type { PriceTable } from "./prices";
 import type { TwapTable } from "./twap";
 import type { OrdersTable, TakesTable } from "./trades";
+import type { ApiTokensTable } from "./token";
 // Database Types
 export interface Database {
   proposal_details: ProposalDetailsTable;
@@ -17,6 +18,7 @@ export interface Database {
   twap_chart_data: TwapTable;
   orders: OrdersTable;
   takes: TakesTable;
+  api_tokens: ApiTokensTable;
 }
 
 // Database Instance
