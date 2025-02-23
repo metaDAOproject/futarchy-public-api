@@ -54,7 +54,7 @@ export class ProposalsStore {
   async findAll(): Promise<(Proposal & ProposalDetails)[]> {
     return await db
       .selectFrom("proposal_details")
-      .leftJoin("proposals", "proposals.proposer_acct", "proposal_details.proposer_acct")
+      .leftJoin("proposals", "proposals.proposal_acct", "proposal_details.proposal_acct")
       .orderBy("proposals.created_at", "asc")
       .selectAll()
       .execute();
@@ -63,7 +63,7 @@ export class ProposalsStore {
   async findAllActive(): Promise<(Proposal & ProposalDetails)[]> {
     return await db
       .selectFrom("proposal_details")
-      .leftJoin("proposals", "proposals.proposer_acct", "proposal_details.proposer_acct")
+      .leftJoin("proposals", "proposals.proposal_acct", "proposal_details.proposal_acct")
       .where("proposals.status", "=", "Pending")
       .orderBy("proposals.created_at", "asc")
       .selectAll()
