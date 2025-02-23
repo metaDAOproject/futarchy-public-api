@@ -41,6 +41,31 @@ export const authMiddleware = (req: Request, res: Response, next: NextFunction) 
   next();
 }
 
+export const uiAuthMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
+  const token = req.session.token;
+  if (!token) {
+    res.redirect("/ui/login?error=true");
+    return;
+  }
+
+  if (token === process.env.ADMIN_AUTH_TOKEN) {
+    req.isAdmin = true;
+    req.authToken = token;
+    next();
+    return;
+  }
+
+  if (!authTokens.has(token)) {
+    //redirect to login page
+    res.redirect("/ui/login?error=true");
+    return;
+  }
+  req.authToken = token;
+  next();
+}
+
+
 export const adminMiddleware = (req: Request, res: Response, next: NextFunction) => {
   if (!req.isAdmin) {
     res.status(401).json({ message: "Unauthorized" })

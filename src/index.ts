@@ -1,7 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import express from "express";
 import { rateLimit } from 'express-rate-limit'
+import session from "express-session";
 import { log } from "./logger/logger";
+import path from "path";
 
 import organizationRouter from "./routes/organization";
 import proposalRouter from "./routes/proposals";
@@ -11,11 +13,24 @@ import twapRouter from "./routes/twap";
 import tradesRouter from "./routes/trades";
 import { authMiddleware } from "./middleware/auth";
 import authMiddlewareRouter from "./middleware/auth";
+import uiRouter from "./routes/ui";
 
 async function main() {
   log.info("Starting API Server");
   const app = express();
   const port = process.env.PORT || 3000;
+
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'default_secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: process.env.NODE_ENV === 'PRODUCTION' }
+  }));
+
+  app.use(express.static(path.join(__dirname, 'public')));
+  app.use(express.urlencoded({ extended: true }));
+  app.use("/ui", uiRouter);
+  
 
   app.use(express.json());
   app.use(function (req, res, next) {

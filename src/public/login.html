@@ -1,0 +1,15 @@
+<html>
+  <body>
+    <h1>Login</h1>
+    <form action="/ui/login" method="post">
+      <input type="text" name="token" placeholder="token">
+      <button type="submit">Login</button>
+    </form>
+    <script>
+      const error = new URLSearchParams(window.location.search).get("error");
+      if (error) {
+        alert("Invalid token");
+      }
+    </script>
+  </body>
+</html>
