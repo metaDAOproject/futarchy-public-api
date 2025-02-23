@@ -61,12 +61,13 @@ function getAuthToken(req: Request) {
 const getNewAuthToken = async (req: Request, res: Response) => {
   const newToken = crypto.randomUUID();
   const url = req.body.url;
-  const tokenRes = await apiTokensStore.create(newToken, url);
-  if (!tokenRes) {
+  try {
+    await apiTokensStore.create(newToken, url);
+    res.json({ token: newToken });
+  } catch (e) {
+    console.log(e);
     res.status(400).json({ message: "Failed to create token" });
-    return;
   }
-  res.json({token: newToken});
 }
 
 const router = express.Router();

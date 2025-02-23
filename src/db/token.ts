@@ -29,15 +29,12 @@ export class ApiTokensStore {
     return results as ApiToken[];
   }
   
-  async create(token: string, url: string): Promise<ApiToken> {
-    const result = await db
+  async create(token: string, url: string = ""): Promise<void> {
+    await db
       .insertInto("api_tokens")
-      .values({ token, url })
-      .returning(["token", "url"])
-      .onConflict((oc) => oc.columns(["token"]).doUpdateSet({ url }))
+      .values({ token: token, url: url })
+      .onConflict((oc) => oc.columns(["token"]).doUpdateSet({ url: url }))
       .executeTakeFirstOrThrow();
-
-    return result as ApiToken;
   }
 
   async delete(token: string): Promise<void> {
