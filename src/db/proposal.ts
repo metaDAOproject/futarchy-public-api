@@ -1,6 +1,7 @@
 import type { Generated, Selectable } from "kysely";
 
 import { db } from "./db";
+import type { Organization } from "./organization";
 
 export interface ProposalDetailsTable {
   proposal_id: Generated<number>;
@@ -51,19 +52,21 @@ export type Proposal = Selectable<ProposalTable>;
 // Repository
 export class ProposalsStore {
 
-  async findAll(): Promise<(Proposal & ProposalDetails)[]> {
+  async findAll(): Promise<(Proposal & ProposalDetails & Organization)[]> {
     return await db
       .selectFrom("proposal_details")
       .leftJoin("proposals", "proposals.proposal_acct", "proposal_details.proposal_acct")
+      .leftJoin("organizations", "organizations.organization_id", "proposal_details.organization_id")
       .orderBy("proposals.created_at", "asc")
       .selectAll()
       .execute();
   }
 
-  async findAllActive(): Promise<(Proposal & ProposalDetails)[]> {
+  async findAllActive(): Promise<(Proposal & ProposalDetails & Organization)[]> {
     return await db
       .selectFrom("proposal_details")
       .leftJoin("proposals", "proposals.proposal_acct", "proposal_details.proposal_acct")
+      .leftJoin("organizations", "organizations.organization_id", "proposal_details.organization_id")
       .where("proposals.status", "=", "Pending")
       .orderBy("proposals.created_at", "asc")
       .selectAll()
