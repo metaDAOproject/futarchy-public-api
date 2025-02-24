@@ -39,12 +39,47 @@ export interface DaoDetailsTable {
   quote_mint: string;
 }
 
+export interface DaosTable {
+  dao_acct: string;
+  base_acct: string;
+  created_at: Date;
+  updated_at: Date;
+  dao_id: number;
+  program_acct: string;
+  quote_acct: string;
+  treasury_acct: string;
+  slots_per_proposal: number;
+  pass_threshold_bps: number;
+  twap_initial_observation: string;
+  twap_max_observation_change_per_update: string;
+  min_quote_futarchic_liquidity: string;
+  min_base_futarchic_liquidity: string;
+  is_active: boolean;
+  is_primary: boolean;
+  organization_id: number;
+  colors: JSON;
+}
 
 export type Organization = Selectable<OrganizationTable>;
-
+export type Dao = Selectable<DaosTable>;
 
 export class OrganizationStore {
-  async findAll(): Promise<Organization[]> {
+  async findAll(): Promise<(Organization)[]> {
+    return await db
+      .selectFrom("organizations")
+      .selectAll()
+      .execute();
+  }
+
+  async findAllWithDaos(): Promise<(Organization & Dao)[]> {
+    return await db
+      .selectFrom("organizations")
+      .leftJoin("daos", "daos.organization_id", "organizations.organization_id")
+      .selectAll()
+      .execute();
+  }
+
+  async findAllActive(): Promise<Organization[]> {
     return await db
       .selectFrom("organizations")
       .where("is_hide", "=", false)

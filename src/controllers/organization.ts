@@ -63,6 +63,32 @@ class OrganizationController {
       res.status(500).json({ error: "Internal server error" });
     }
   };
+
+  public getActiveOrganizations = async (req: Request, res: Response) => {
+    try {
+      const organizations = await organizationStore.findAllActive();
+      const response: APIResponse = {
+        success: true,
+        data: organizations
+      };
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };
+
+  public getOrganizationsWithDaos = async (req: Request, res: Response) => {
+    try {
+      const organizations = await organizationStore.findAllWithDaos();
+      const response: APIResponse = {
+        success: true,
+        data: organizations
+      };
+      res.status(200).json(response);
+    } catch (error) {
+      res.status(500).json({ error: "Internal server error" });
+    }
+  };
 }
 
 export default OrganizationController;
