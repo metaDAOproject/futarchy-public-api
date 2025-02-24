@@ -8,6 +8,7 @@ import type { PriceTable } from "./prices";
 import type { TwapTable } from "./twap";
 import type { OrdersTable, TakesTable } from "./trades";
 import type { ApiTokensTable } from "./token";
+import type { PerformanceTable } from "./performance";
 // Database Types
 export interface Database {
   proposal_details: ProposalDetailsTable;
@@ -16,6 +17,7 @@ export interface Database {
   dao_details: DaoDetailsTable;
   prices_chart_data: PriceTable;
   twap_chart_data: TwapTable;
+  user_performance: PerformanceTable;
   orders: OrdersTable;
   takes: TakesTable;
   api_tokens: ApiTokensTable;

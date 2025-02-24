@@ -4,11 +4,13 @@ import { rateLimit } from 'express-rate-limit'
 import { log } from "./logger/logger";
 
 import organizationRouter from "./routes/organization";
+import organizationsRouter from "./routes/organizations";
 import proposalRouter from "./routes/proposals";
 import healthRouter from "./routes/health";
 import pricesRouter from "./routes/prices";
 import twapRouter from "./routes/twap";
 import tradesRouter from "./routes/trades";
+import performanceRouter from "./routes/performance";
 import { authMiddleware } from "./middleware/auth";
 import authMiddlewareRouter from "./middleware/auth";
 
@@ -16,6 +18,9 @@ async function main() {
   log.info("Starting API Server");
   const app = express();
   const port = process.env.PORT || 3000;
+
+  //trust cloudflare proxy
+  app.set('trust proxy', 1);
 
   app.use(express.json());
   app.use(function (req, res, next) {
@@ -38,10 +43,12 @@ async function main() {
   
   app.use("/auth", authMiddlewareRouter);
   app.use("/proposals", proposalRouter); 
-  app.use("/organizations", organizationRouter);
+  app.use("/organizations", organizationsRouter);
+  app.use("/organization", organizationRouter);
   app.use("/prices", pricesRouter);
   app.use("/twap", twapRouter);
   app.use("/trades", tradesRouter);
+  app.use("/performance", performanceRouter);
   
   app.use(function (
     err: Error,
