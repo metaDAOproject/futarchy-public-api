@@ -9,3 +9,5 @@ const organizationController = new OrganizationController();
 
 router.get("/", organizationController.getOrganizations);
 router.get("/:id", organizationController.getOrganization);
+router.get("/active", organizationController.getActiveOrganizations);
+router.get("/with-daos", organizationController.getOrganizationsWithDaos);
