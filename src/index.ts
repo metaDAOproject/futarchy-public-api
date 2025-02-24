@@ -4,6 +4,7 @@ import { rateLimit } from 'express-rate-limit'
 import { log } from "./logger/logger";
 
 import organizationRouter from "./routes/organization";
+import organizationsRouter from "./routes/organizations";
 import proposalRouter from "./routes/proposals";
 import healthRouter from "./routes/health";
 import pricesRouter from "./routes/prices";
@@ -41,7 +42,8 @@ async function main() {
   
   app.use("/auth", authMiddlewareRouter);
   app.use("/proposals", proposalRouter); 
-  app.use("/organizations", organizationRouter);
+  app.use("/organizations", organizationsRouter);
+  app.use("/organization", organizationRouter);
   app.use("/prices", pricesRouter);
   app.use("/twap", twapRouter);
   app.use("/trades", tradesRouter);
