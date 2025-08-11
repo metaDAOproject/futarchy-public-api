@@ -3,5 +3,6 @@ import { Request } from "express";
 declare module "express-serve-static-core" {
   interface Request {
     isAdmin?: boolean;
+    isCoinGecko?: boolean;
   }
 } 

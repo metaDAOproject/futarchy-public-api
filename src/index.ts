@@ -13,6 +13,7 @@ import tradesRouter from "./routes/trades";
 import performanceRouter from "./routes/performance";
 import { authMiddleware } from "./middleware/auth";
 import authMiddlewareRouter from "./middleware/auth";
+import supplyRouter from "./routes/supply";
 
 async function main() {
   log.info("Starting API Server");
@@ -38,6 +39,7 @@ async function main() {
 
   app.use(limiter);
   app.use("/health", healthRouter);  
+  app.use("/supply", supplyRouter);
   
   app.use(authMiddleware);
   
